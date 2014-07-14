@@ -7,8 +7,9 @@ request parameters and query generation in templates. It also provides an easy w
 in one place.
 
 ### Follows a few basic principles
- 1. **Not-in-the-way**. You only use what you need.
- 1. **Avoid multi-inheritance or mixins**. Wrap when possible.
+ 1. **Not-in-the-way**
+   1.You only use what you need.
+   1. **Avoid multi-inheritance or mixins**. Wrap when possible.
  1. **All errors** should be handled **in one place**
  1. **All requests are REST-ful**
  1. **All requests** should **be** as **stateless** as possible
