@@ -29,11 +29,22 @@ in one place.
    1. redirects to route you've provided and passes errors as session messages
 
 ## What this doesn't do
- 1. It doesn't offer or forces you to use serializers. You transform the data yourself, you output the data in templates.
- It only offers a `json` template helper which can be useful when you've prepared a dict.
- 1. It doesn't take care of pagination for you.
+### No strict concept of resources
+It doesn't have the concept that models are resources. You control what is a resource.
 
-### Installation & Configuration
+### It doesn't offer or forces you to use serializers
+You transform the data yourself, you output the data in templates.
+It only offers a `json` template helper which can be useful when you've prepared a dict.
+
+This offers maximum flexibility and slashes one level of abstraciton
+
+### It doesn't take care of pagination for you
+Because it doesn't have strict concept of resources.
+
+### No auto-routing
+No generation of url rules
+
+## Installation & Configuration
 
 ```bash
 pip install django-restful
