@@ -2,18 +2,21 @@
 
 ## What this does
  
-A module that provides REST-ful way to interact with views, templates, response format,
+A small module that provides REST-ful way to interact with views, templates, response format,
 request parameters and query generation in templates. It also provides an easy way to handle all errors
 in one place.
 
-### Follows few basic principles
+### Follows a few basic principles
  1. **Not-in-the-way**. You only use what you need.
+ 1. **Avoid multi-inheritance or mixins**. Wrap when possible.
  1. **All errors** should be handled **in one place**
  1. **All requests are REST-ful**
- 1. **All requests** should **be** as **stateless** as possible (any query parameters and their values in the
- current url should be passed to the next link on the website unless that parameter must be changed)
+ 1. **All requests** should **be** as **stateless** as possible
+   1. avoid cookies, localstorage when possible
+   1. any query parameters and their values in the current url should be passed to the
+   next link on the website unless that parameter must be changed)
  1. **All http methods** should be **simulatable**
- 1. **Response format** is extracted from http header but should also be **simulatable** via query param
+ 1. **Response format** should be extracted from http header but should also be **simulatable**
  1. **Template names** should be **auto-detected**
  1. Developer should have **full control of data transformation** in the template
 
