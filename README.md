@@ -1,11 +1,22 @@
-## django-restful
+# django-restful
 
-### What this does
+## What this does
+ 
 A module that provides REST-ful way to interact with views, templates, response types,
 request parameters and query generation in templates. It also provides an easy way to handle all errors
 in one place.
 
-Comes with:
+## Follows few basic principles
+ 1. all errors should be handled in one place
+ 1. any query parameters and their values in the current url should be passed to the next link on the website unless
+  that parameter must be changed
+ 1. all requests are REST-ful
+ 1. all http methods should be simulatable
+ 1. response format is extracted from http header but should also be simulatable via query param
+ 1. template names should be auto-detected
+ 1. developer should have full control of data transformation in the template
+
+## Comes with
 
  - middleware that merges all request parameters in `request.params`
  - middleware that allows you to fake/force http method via http parameter (...) or http header (...)
@@ -16,7 +27,7 @@ Comes with:
    1. passes errors to to a single error template
    1. redirects to route you've provided and passes errors as session messages
 
-### What this doesn't do
+## What this doesn't do
  1. It doesn't offer or forces you to use serializers. You transform the data yourself, you output the data in templates.
  It only offers a `json` template helper which can be useful when you've prepared a dict.
  1. It doesn't take care of pagination for you.
