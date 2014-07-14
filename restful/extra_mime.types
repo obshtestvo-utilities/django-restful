@@ -1,0 +1,5 @@
+application/anton anton
+application/json json
+text/comma-separated-values csv
+application/csv csv
+text/x-dot-template dot
