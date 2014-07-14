@@ -23,7 +23,7 @@ Comes with:
 
 ### Installation & Configuration
 
-```sh
+```bash
 pip install django-restful
 ```
 
@@ -53,6 +53,12 @@ MIDDLEWARE_CLASSES = (
     'restful.error_handler.ErrorHandler',
     'restful.middleware.ResponseFormatDetection',
 )
+
+INSTALLED_APPS = (
+    ...
+    'restful',
+)
+
 ```
 
 

@@ -11,10 +11,10 @@ from restful.exception.http import HttpResponseNotModifiedRedirect
 
 class ErrorHandler(object):
     def process_exception(self, request, exception):
-        template = 'error/get'
+        template = getattr(settings, 'RESTFUL_ERROR_TEMPLATE', 'error/get')
 
         if not isinstance(exception, VerboseException):
-            return TemplateResponse(request, template, {"errors": exception.messsage}, status=400)
+            return TemplateResponse(request, template, {"errors": {"generic": exception.messsage}}, status=400)
 
         if isinstance(exception, VerboseRedirectException):
             for key, value in exception.get_errors().iteritems():
