@@ -1,11 +1,15 @@
 import os
+import importlib
 import inspect
 from functools import wraps
 
-from django.template.response import TemplateResponse
 from django.utils.decorators import available_attrs
 from django.views.generic.base import View
+from django.conf import settings
 
+response_class = settings.RESTFUL_RESPONSE if hasattr(settings, 'RESTFUL_RESPONSE') else 'django.template.response.TemplateResponse'
+response_class = response_class.rsplit('.', 1)
+response_class = getattr(importlib.import_module(response_class[0]), response_class[1])
 
 def restful_template(dirname, name, func=None):
     def decorator(action):
@@ -20,7 +24,7 @@ def restful_template(dirname, name, func=None):
             if isinstance(data, tuple):
                 status = data[1]
                 data = data[0]
-            return TemplateResponse(request, template, data, status=status)
+            return response_class(request, template, data, status=status)
 
         return _restful
 
