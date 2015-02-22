@@ -2,6 +2,8 @@ from urllib.parse import urlparse
 import os, mimetypes
 from mimetypes import guess_extension
 
+# .htm causes a lot of wrong extension guessing
+mimetypes.types_map.pop(".htm", None)
 mimetypes.init(mimetypes.knownfiles+[os.path.abspath("extra_mime.types")])
 
 class HttpMergeParameters(object):
