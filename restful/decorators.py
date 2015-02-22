@@ -1,6 +1,5 @@
 import os
 import importlib
-import inspect
 from functools import wraps
 
 from django.utils.decorators import available_attrs
@@ -35,7 +34,7 @@ def restful_template(dirname, name, func=None):
 
 
 def restful_view_templates(cls):
-    for name, m in inspect.getmembers(cls, inspect.ismethod):
-        if name in View.http_method_names:
-            setattr(cls, name, restful_template(cls.__name__[:-4].lower(), name, func=m))
+    for verb in View.http_method_names:
+        if hasattr(cls, verb):
+            setattr(cls, verb, restful_template(cls.__name__[:-4].lower(), verb, func=getattr(cls, verb)))
     return cls
