@@ -1,4 +1,4 @@
-import urlparse
+from urllib.parse import urlparse
 import os, mimetypes
 from mimetypes import guess_extension
 
