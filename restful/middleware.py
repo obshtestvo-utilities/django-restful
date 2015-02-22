@@ -1,4 +1,3 @@
-from django.utils.datastructures import MultiValueDict
 import urlparse
 import os, mimetypes
 from mimetypes import guess_extension
