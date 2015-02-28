@@ -4,18 +4,25 @@ from functools import wraps
 
 from django.utils.decorators import available_attrs
 from django.views.generic.base import View
+from django.template import TemplateDoesNotExist
+from django.template.loader import get_template
 from django.conf import settings
 
 response_class = settings.RESTFUL_RESPONSE if hasattr(settings, 'RESTFUL_RESPONSE') else 'django.template.response.TemplateResponse'
 response_class = response_class.rsplit('.', 1)
 response_class = getattr(importlib.import_module(response_class[0]), response_class[1])
 
-def restful_template(dirname, name, func=None):
+def restful_template(dirname, name, appname=None, func=None):
     def decorator(action):
         # maintain correct stacktrace name and doc
         @wraps(action, assigned=available_attrs(action))
         def _restful(obj, request, *args, **kwargs):
             template = os.path.join(dirname, name)
+            try:
+                get_template(template)
+            except TemplateDoesNotExist:
+                if appname is not None:
+                    template = os.path.join(appname, template)
             data = action(obj, request, *args, **kwargs)
             if not (isinstance(data, tuple) or isinstance(data, dict) or data is None):
                 return data
@@ -36,5 +43,7 @@ def restful_template(dirname, name, func=None):
 def restful_view_templates(cls):
     for verb in View.http_method_names:
         if hasattr(cls, verb):
-            setattr(cls, verb, restful_template(cls.__name__[:-4].lower(), verb, func=getattr(cls, verb)))
+            appname = cls.__module__.split('.')[0]
+            viewname = cls.__name__[:-4].lower()
+            setattr(cls, verb, restful_template(viewname, verb, appname=appname, func=getattr(cls, verb)))
     return cls
