@@ -9,3 +9,10 @@ def errors(request):
         if message.level == constants.ERROR:
             errors = dict(errors, **json.loads(message.message))
     return errors
+
+def success(request):
+    messages = {}
+    for message in get_messages(request):
+        if message.level == constants.SUCCESS:
+            messages = dict(messages, **json.loads(message.message))
+    return messages

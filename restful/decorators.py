@@ -1,5 +1,6 @@
 import os
 import importlib
+import json
 from functools import wraps
 
 from django.utils.decorators import available_attrs
@@ -7,6 +8,9 @@ from django.views.generic.base import View
 from django.template import TemplateDoesNotExist
 from django.template.loader import get_template
 from django.conf import settings
+from django.contrib import messages
+from django.shortcuts import resolve_url
+from .http import HtmlOnlyRedirectSuccessDict, HttpResponseNotModifiedRedirect
 
 response_class = settings.RESTFUL_RESPONSE if hasattr(settings, 'RESTFUL_RESPONSE') else 'django.template.response.TemplateResponse'
 response_class = response_class.rsplit('.', 1)
@@ -24,6 +28,14 @@ def restful_template(dirname, name, appname=None, func=None):
                 if appname is not None:
                     template = os.path.join(appname, template)
             data = action(obj, request, *args, **kwargs)
+
+            if isinstance(data, HtmlOnlyRedirectSuccessDict) and request.is_html():
+                for key, value in data.items():
+                    messages.success(request, json.dumps({key: value}))
+
+                redirection = data.get_redirect()
+                return HttpResponseNotModifiedRedirect(resolve_url(redirection['name'], **redirection['vars']))
+
             if not (isinstance(data, tuple) or isinstance(data, dict) or data is None):
                 return data
             status = 200

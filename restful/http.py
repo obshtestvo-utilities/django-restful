@@ -5,6 +5,30 @@ from django.http.request import HttpRequest
 class HttpResponseNotModifiedRedirect(HttpResponseRedirectBase):
     status_code = 303
 
+
+class HtmlOnlyRedirectSuccessDict(dict):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.redirect = {
+            "name": None,
+            "vars": {}
+        }
+
+    def get_redirect(self):
+        return self.redirect
+
+    def set_redirect(self, name, **kwargs):
+        """
+        @errors: {}
+        Dictionary redirect's name and vars
+        """
+        self.redirect = {
+            "name": name,
+            "vars": kwargs
+        }
+        return self
+
+
 # monkey-patching Django request, because we can't replace it with custom class
 def is_pjax(self):
     return self.is_ajax() and (self.META.get('HTTP_X_PJAX') or self.params.get('X-Pjax'))

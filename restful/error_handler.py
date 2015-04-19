@@ -11,13 +11,12 @@ from .http import HttpResponseNotModifiedRedirect
 
 class ErrorHandler(object):
     def process_exception(self, request, exception):
-        if isinstance(exception, VerboseHtmlOnlyRedirectException):
-            if request.is_html():
-                for key, value in exception.get_errors().items():
-                    messages.error(request, json.dumps({key: value}))
+        if isinstance(exception, VerboseHtmlOnlyRedirectException) and request.is_html():
+            for key, value in exception.get_errors().items():
+                messages.error(request, json.dumps({key: value}))
 
-                redirection = exception.get_redirect()
-                return HttpResponseNotModifiedRedirect(resolve_url(redirection['name'], **redirection['vars']))
+            redirection = exception.get_redirect()
+            return HttpResponseNotModifiedRedirect(resolve_url(redirection['name'], **redirection['vars']))
 
         template = getattr(settings, 'RESTFUL_ERROR_TEMPLATE', 'error/get')
 
