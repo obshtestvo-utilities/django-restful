@@ -1,4 +1,4 @@
-import pickle
+import json
 
 from django.contrib import messages
 from django.shortcuts import resolve_url
@@ -14,7 +14,7 @@ class ErrorHandler(object):
         if isinstance(exception, VerboseHtmlOnlyRedirectException):
             if request.is_html():
                 for key, value in exception.get_errors().items():
-                    messages.error(request, pickle.dumps({key: value}))
+                    messages.error(request, json.dumps({key: value}))
 
                 redirection = exception.get_redirect()
                 return HttpResponseNotModifiedRedirect(resolve_url(redirection['name'], **redirection['vars']))
