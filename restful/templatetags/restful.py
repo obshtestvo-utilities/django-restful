@@ -18,7 +18,7 @@ def query(context, **kwargs):
     request = context.get('request')
     params = request.params.copy()
 
-    for name, value in kwargs.iteritems():
+    for name, value in kwargs.items():
         if params.get(name, None) is not None and value is None:
             del params[name]
         if value is not None:

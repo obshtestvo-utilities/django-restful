@@ -13,7 +13,7 @@ class ErrorHandler(object):
     def process_exception(self, request, exception):
         if isinstance(exception, VerboseHtmlOnlyRedirectException):
             if request.is_html():
-                for key, value in exception.get_errors().iteritems():
+                for key, value in exception.get_errors().items():
                     messages.error(request, pickle.dumps({key: value}))
 
                 redirection = exception.get_redirect()
