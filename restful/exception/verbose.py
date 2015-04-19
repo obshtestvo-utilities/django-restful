@@ -2,7 +2,7 @@ import json
 
 class VerboseException(Exception):
     def __init__(self, *args, **kwargs):
-        super(Exception, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.errors = {}
 
     def get_errors(self):
@@ -28,9 +28,9 @@ class VerboseException(Exception):
         return json.dumps(self.errors)
 
 
-class VerboseRedirectException(VerboseException):
+class VerboseHtmlOnlyRedirectException(VerboseException):
     def __init__(self, *args, **kwargs):
-        super(VerboseRedirectException, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.redirect = {
             "name": None,
             "vars": {}
