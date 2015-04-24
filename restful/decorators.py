@@ -23,7 +23,7 @@ def restful_template(dirname, name, appname=None, func=None):
         def _restful(obj, request, *args, **kwargs):
             template = os.path.join(dirname, name)
             try:
-                get_template(template)
+                get_template(template + request.mime_ext)
             except TemplateDoesNotExist:
                 if appname is not None:
                     template = os.path.join(appname, template)
