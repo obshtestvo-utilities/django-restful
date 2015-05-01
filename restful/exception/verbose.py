@@ -1,4 +1,5 @@
 import json
+from .htmlonlyredirect import HtmlOnlyRedirectException
 
 class VerboseException(Exception):
     def __init__(self, *args, **kwargs):
@@ -28,25 +29,5 @@ class VerboseException(Exception):
         return json.dumps(self.errors)
 
 
-class VerboseHtmlOnlyRedirectException(VerboseException):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.redirect = {
-            "name": None,
-            "vars": {}
-        }
-
-    def get_redirect(self):
-        return self.redirect
-
-    def set_redirect(self, name, **kwargs):
-        """
-        @errors: {}
-        Dictionary redirect's name and vars
-        """
-        self.redirect = {
-            "name": name,
-            "vars": kwargs
-        }
-        return self
-
+class VerboseHtmlOnlyRedirectException(VerboseException, HtmlOnlyRedirectException):
+    pass
