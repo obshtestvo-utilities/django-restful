@@ -3,6 +3,7 @@ import os, mimetypes
 from mimetypes import guess_extension
 
 # .htm causes a lot of wrong extension guessing
+mimetypes.types_map.pop(".shtml", None)
 mimetypes.types_map.pop(".htm", None)
 mimetypes.init(mimetypes.knownfiles+[os.path.abspath("extra_mime.types")])
 
