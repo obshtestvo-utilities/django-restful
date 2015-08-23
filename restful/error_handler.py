@@ -18,7 +18,12 @@ class ErrorHandler(object):
                 messages.error(request, json.dumps({"generic": str(exception)}))
                 for key, value in exception.get_errors().items():
                     messages.error(request, json.dumps({key: value}))
-                messages.info(request, json.dumps({'input': request.params}))
+                last_input = request.params.copy()
+                try:
+                    del last_input["csrfmiddlewaretoken"]
+                except:
+                    pass
+                messages.info(request, json.dumps({'input': last_input}))
 
             redirection = exception.get_redirect()
             return HttpResponseNotModifiedRedirect(resolve_url(redirection['name'], **redirection['vars']))
