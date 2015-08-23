@@ -16,3 +16,12 @@ def success(request):
         if message.level == constants.SUCCESS:
             messages = dict(messages, **json.loads(message.message))
     return messages
+
+def last_input(request):
+    for message in get_messages(request):
+        if message.level == constants.INFO:
+            data = json.loads(message.message)
+            try:
+                return data['input']
+            except:
+                continue
