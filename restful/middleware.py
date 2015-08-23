@@ -26,18 +26,26 @@ class HttpMergeParameters(object):
 
 class HttpMethodOverride(object):
     def process_request(self, request):
-        if 'HTTP_X_HTTP_METHOD' in request.META:  # (Microsoft)
-            request.method = request.META['HTTP_X_HTTP_METHOD']
+        try:
+            request.method = request.META['HTTP_X_HTTP_METHOD']  # (Microsoft)
             return
-        elif 'HTTP_X_HTTP_METHOD_OVERRIDE' in request.META:  # (Google/GData)
-            request.method = request.META['HTTP_X_HTTP_METHOD_OVERRIDE']
+        except:
+            pass
+        try:
+            request.method = request.META['HTTP_X_HTTP_METHOD_OVERRIDE']  # (Google/GData)
             return
-        elif 'X_METHOD_OVERRIDE' in request.META:  # (IBM)
-            request.method = request.META['X_METHOD_OVERRIDE']
+        except:
+            pass
+        try:
+            request.method = request.META['X_METHOD_OVERRIDE']  # (IBM)
             return
-        elif 'X-Method' in request.params:  # custom
-            request.method = request.params.get('X-Method')
+        except:
+            pass
+        try:
+            request.method = request.params['X-Method']  # custom
             return
+        except:
+            pass
 
 
 class ResponseFormatDetection(object):

@@ -36,7 +36,7 @@ def restful_template(dirname, name, appname=None, func=None):
                 redirection = data.get_redirect()
                 return HttpResponseNotModifiedRedirect(resolve_url(redirection['name'], **redirection['vars']))
 
-            if not (isinstance(data, tuple) or isinstance(data, dict) or data is None):
+            if not (isinstance(data, (tuple, dict)) or data is None):
                 return data
             status = 200
             if isinstance(data, tuple):
