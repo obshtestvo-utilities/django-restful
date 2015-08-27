@@ -45,7 +45,7 @@ class ErrorHandler(object):
         template_alternatives = pre_error_rendering.send(
             sender=ErrorHandler,
             url_name=request.resolver_match.url_name,
-            params=request.params,
+            request=request,
             errors=errors
         )
         template = getattr(settings, 'RESTFUL_ERROR_TEMPLATE', 'error/get')

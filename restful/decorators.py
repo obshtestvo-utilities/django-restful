@@ -34,9 +34,8 @@ def restful_template(dirname, name, appname=None, func=None):
             template_alternatives = pre_success_rendering.send(
                 sender=obj.__class__,
                 url_name=request.resolver_match.url_name,
-                params=request.params,
-                data=data,
-                http_verb=name
+                request=request,
+                data=data
             )
             for receiver, template_name in template_alternatives:
                 if template_name is not None:
