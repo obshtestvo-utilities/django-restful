@@ -9,11 +9,20 @@ from django.conf import settings
 from restful.exception.verbose import VerboseException, VerboseHtmlOnlyRedirectException
 from restful.exception.htmlonlyredirect import HtmlOnlyRedirectException
 from .http import HttpResponseNotModifiedRedirect
+from .signals import pre_error_rendering
 
 
 class ErrorHandler(object):
     def process_exception(self, request, exception):
-        if isinstance(exception, HtmlOnlyRedirectException) and request.is_html():
+        try:
+            status = exception.status_code
+        except:
+            status = 400
+
+        if isinstance(exception, PermissionDenied):
+            status = 403
+
+        if isinstance(exception, HtmlOnlyRedirectException) and request.is_html() and not request.is_pjax():
             if isinstance(exception, VerboseException):
                 messages.error(request, json.dumps({"generic": str(exception)}))
                 for key, value in exception.get_errors().items():
@@ -28,10 +37,21 @@ class ErrorHandler(object):
             redirection = exception.get_redirect()
             return HttpResponseNotModifiedRedirect(resolve_url(redirection['name'], **redirection['vars']))
 
+        if isinstance(exception, VerboseException):
+            errors = exception.get_errors()
+        else:
+            errors = {"generic": str(exception)}
+
+        template_alternatives = pre_error_rendering.send(
+            sender=ErrorHandler,
+            url_name=request.resolver_match.url_name,
+            params=request.params,
+            errors=errors
+        )
         template = getattr(settings, 'RESTFUL_ERROR_TEMPLATE', 'error/get')
+        for receiver, template_name in template_alternatives:
+            if template_name is not None:
+                template = template_name
+                break
 
-        if not isinstance(exception, VerboseException):
-            status = 403 if isinstance(exception, PermissionDenied) else 400
-            return TemplateResponse(request, template, {"errors": {"generic": str(exception)}}, status=status)
-
-        return TemplateResponse(request, template, {"errors": exception.get_errors()}, status=400)
+        return TemplateResponse(request, template, {"errors": errors}, status=status)

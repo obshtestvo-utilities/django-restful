@@ -10,9 +10,11 @@ from django.template.loader import get_template
 from django.conf import settings
 from django.contrib import messages
 from django.shortcuts import resolve_url
-from .http import HtmlOnlyRedirectSuccessDict, HttpResponseNotModifiedRedirect
 
-response_class = settings.RESTFUL_RESPONSE if hasattr(settings, 'RESTFUL_RESPONSE') else 'django.template.response.TemplateResponse'
+from .http import HtmlOnlyRedirectSuccessDict, HttpResponseNotModifiedRedirect
+from .signals import pre_success_rendering
+
+response_class = getattr(settings, 'RESTFUL_RESPONSE', 'django.template.response.TemplateResponse')
 response_class = response_class.rsplit('.', 1)
 response_class = getattr(importlib.import_module(response_class[0]), response_class[1])
 
@@ -29,7 +31,19 @@ def restful_template(dirname, name, appname=None, func=None):
                     template = os.path.join(appname, template)
             data = action(obj, request, *args, **kwargs)
 
-            if isinstance(data, HtmlOnlyRedirectSuccessDict) and request.is_html():
+            template_alternatives = pre_success_rendering.send(
+                sender=obj.__class__,
+                url_name=request.resolver_match.url_name,
+                params=request.params,
+                data=data,
+                http_verb=name
+            )
+            for receiver, template_name in template_alternatives:
+                if template_name is not None:
+                    template = template_name
+                    break
+
+            if isinstance(data, HtmlOnlyRedirectSuccessDict) and request.is_html() and not request.is_pjax():
                 for key, value in data.items():
                     messages.success(request, json.dumps({key: value}))
 

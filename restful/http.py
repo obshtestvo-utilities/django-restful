@@ -33,7 +33,7 @@ class HtmlOnlyRedirectSuccessDict(dict):
 def is_pjax(self):
     return self.is_ajax() and (self.META.get('HTTP_X_PJAX') or self.params.get('X-Pjax'))
 
-# onlt works when ResponseFormatDetection middleware is enabled
+# only works when ResponseFormatDetection middleware is enabled
 def is_html(self):
     return self.mime_ext == '.html'
 
