@@ -16,7 +16,7 @@ in one place.
    1. avoid cookies, localstorage when possible
    1. any query parameters and their values in the current url should be passed to the
    next link on the website unless that parameter must be changed)
- 1. **All http methods** should be **simulatable**
+ 1. **All http methods** should be **simulatable**, but do take care not to retrieve sensitive information from GET variables
  1. **Response format** should be extracted from http header but should also be **simulatable**
  1. **Template names** should be **auto-detected**
  1. Developer should have **full control of data transformation** in the template
