@@ -1,35 +1,20 @@
 import json
 
-from django.core.exceptions import PermissionDenied, ObjectDoesNotExist, ViewDoesNotExist
-from django.http.response import Http404
 from django.contrib import messages
 from django.shortcuts import resolve_url
 from django.template.response import TemplateResponse
 from django.conf import settings
 
-from restful.exception.verbose import VerboseException, VerboseHtmlOnlyRedirectException
+from restful.exception.verbose import VerboseException
 from restful.exception.htmlonlyredirect import HtmlOnlyRedirectException
-from .http import HttpResponseNotModifiedRedirect
+from .http import HttpResponseNotModifiedRedirect, get_exception_status_code
 from .signals import pre_error_rendering
 
 
 class ErrorHandler(object):
-    def _get_status_code(self, exception):
-        try:
-            return exception.status_code
-        except:
-            pass
-
-        if isinstance(exception, PermissionDenied):
-            return 403
-
-        if isinstance(exception, (ObjectDoesNotExist, ViewDoesNotExist, Http404)):
-            return 404
-
-        return 400
 
     def process_exception(self, request, exception):
-        status = self._get_status_code(exception)
+        status = get_exception_status_code(exception)
 
         if isinstance(exception, HtmlOnlyRedirectException) and request.is_html() and not request.is_pjax():
             if isinstance(exception, VerboseException):

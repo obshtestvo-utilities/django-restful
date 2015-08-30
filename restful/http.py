@@ -1,4 +1,5 @@
-from django.http.response import HttpResponseRedirectBase
+from django.core.exceptions import PermissionDenied, ObjectDoesNotExist, ViewDoesNotExist
+from django.http.response import Http404, HttpResponseRedirectBase
 from django.http.request import HttpRequest
 
 
@@ -54,3 +55,17 @@ def get_expected_mimetypes(self):
 HttpRequest.is_pjax = is_pjax
 HttpRequest.get_expected_mimetypes = get_expected_mimetypes
 HttpRequest.is_html = is_html
+
+def get_exception_status_code(exception):
+    try:
+        return exception.status_code
+    except:
+        pass
+
+    if isinstance(exception, PermissionDenied):
+        return 403
+
+    if isinstance(exception, (ObjectDoesNotExist, ViewDoesNotExist, Http404)):
+        return 404
+
+    return 400
