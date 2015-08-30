@@ -12,7 +12,7 @@ def final_template_name(request, possible_template_name, ext):
     if request.is_pjax():
         path, filename = os.path.split(possible_template_name)
         possible_template_name = os.path.join(path, '_' + filename)
-    return possible_template_name + '.' + ext
+    return possible_template_name + ext
 
 
 class HttpMergeParameters(object):
