@@ -1,6 +1,7 @@
 import json
 
-from django.core.exceptions import PermissionDenied
+from django.core.exceptions import PermissionDenied, ObjectDoesNotExist, ViewDoesNotExist
+from django.http.response import Http404
 from django.contrib import messages
 from django.shortcuts import resolve_url
 from django.template.response import TemplateResponse
@@ -21,6 +22,9 @@ class ErrorHandler(object):
 
         if isinstance(exception, PermissionDenied):
             status = 403
+
+        if isinstance(exception, (ObjectDoesNotExist, ViewDoesNotExist, Http404)):
+            status = 404
 
         if isinstance(exception, HtmlOnlyRedirectException) and request.is_html() and not request.is_pjax():
             if isinstance(exception, VerboseException):
