@@ -1,7 +1,8 @@
 import json
 from .htmlonlyredirect import HtmlOnlyRedirectException
+from .base import HttpException
 
-class VerboseException(Exception):
+class VerboseException(HttpException):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.errors = {}

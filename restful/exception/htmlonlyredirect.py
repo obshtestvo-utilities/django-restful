@@ -1,6 +1,7 @@
 from django.core.exceptions import PermissionDenied
+from .base import HttpException
 
-class HtmlOnlyRedirectException(Exception):
+class HtmlOnlyRedirectException(HttpException):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.redirect = {
