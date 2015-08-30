@@ -7,6 +7,14 @@ mimetypes.types_map.pop(".shtml", None)
 mimetypes.types_map.pop(".htm", None)
 mimetypes.init(mimetypes.knownfiles+[os.path.abspath("extra_mime.types")])
 
+
+def final_template_name(request, possible_template_name, ext):
+    if request.is_pjax():
+        path, filename = os.path.split(possible_template_name)
+        possible_template_name = os.path.join(path, '_' + filename)
+    return possible_template_name + '.' + ext
+
+
 class HttpMergeParameters(object):
     def process_request(self, request):
         if request.method.lower() == 'get':
@@ -71,13 +79,6 @@ class TemplateExtensionByAcceptedType(object):
 
         if ext and request.resolver_match.app_name != 'admin':
             response['Content-Type'] = mtype + '; charset=' + response._charset
-        else:
-            ext = ''
-
-        response.template_name += ext
-
-        if request.is_pjax():
-            path, filename = os.path.split(response.template_name)
-            response.template_name = os.path.join(path, '_' + filename)
+            response.template_name = final_template_name(request, response.template_name, ext)
 
         return response

@@ -13,6 +13,7 @@ from django.shortcuts import resolve_url
 
 from .http import HtmlOnlyRedirectSuccessDict, HttpResponseNotModifiedRedirect
 from .signals import pre_success_rendering
+from .middleware import final_template_name
 
 response_class = getattr(settings, 'RESTFUL_RESPONSE', 'django.template.response.TemplateResponse')
 response_class = response_class.rsplit('.', 1)
@@ -25,7 +26,7 @@ def restful_template(dirname, name, appname=None, func=None):
         def _restful(obj, request, *args, **kwargs):
             template = os.path.join(dirname, name)
             try:
-                get_template(template + request.mime_ext)
+                get_template(final_template_name(request, os.path.join(dirname, name), request.mime_ext))
             except TemplateDoesNotExist:
                 if appname is not None:
                     template = os.path.join(appname, template)
