@@ -4,3 +4,4 @@ class HttpException(Exception):
 
     def by(self, exception):
         self.status_code = get_exception_status_code(exception)
+        return self
