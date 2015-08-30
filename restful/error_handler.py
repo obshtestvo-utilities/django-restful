@@ -14,17 +14,22 @@ from .signals import pre_error_rendering
 
 
 class ErrorHandler(object):
-    def process_exception(self, request, exception):
+    def _get_status_code(self, exception):
         try:
-            status = exception.status_code
+            return exception.status_code
         except:
-            status = 400
+            pass
 
         if isinstance(exception, PermissionDenied):
-            status = 403
+            return 403
 
         if isinstance(exception, (ObjectDoesNotExist, ViewDoesNotExist, Http404)):
-            status = 404
+            return 404
+
+        return 400
+
+    def process_exception(self, request, exception):
+        status = self._get_status_code(exception)
 
         if isinstance(exception, HtmlOnlyRedirectException) and request.is_html() and not request.is_pjax():
             if isinstance(exception, VerboseException):
