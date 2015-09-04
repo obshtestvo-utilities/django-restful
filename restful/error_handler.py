@@ -18,7 +18,7 @@ class ErrorHandler(object):
 
         if isinstance(exception, HtmlOnlyRedirectException) and request.is_html() and not request.is_pjax():
             if isinstance(exception, VerboseException):
-                messages.error(request, json.dumps({"generic": str(exception)}))
+                messages.error(request, json.dumps({"generic": str(str(exception))}))
                 for key, value in exception.get_errors().items():
                     messages.error(request, json.dumps({key: value}))
                 last_input = request.params.copy()
@@ -34,7 +34,7 @@ class ErrorHandler(object):
         if isinstance(exception, VerboseException):
             errors = exception.get_errors()
         else:
-            errors = {"generic": str(exception)}
+            errors = {"generic": str(str(exception))}
 
         template_alternatives = pre_error_rendering.send(
             sender=ErrorHandler,
