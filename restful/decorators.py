@@ -50,7 +50,10 @@ def restful_template(dirname, name, appname=None, func=None):
 
             if isinstance(data, HtmlOnlyRedirectSuccessDict) and request.is_html() and not request.is_pjax():
                 for key, value in data.items():
-                    messages.success(request, json.dumps({key: value}))
+                    try:
+                        messages.success(request, json.dumps({key: value}))
+                    except:
+                        messages.success(request, json.dumps({key: None}))
 
                 redirection = data.get_redirect()
                 return HttpResponseNotModifiedRedirect(resolve_url(redirection['name'], **redirection['vars']))
