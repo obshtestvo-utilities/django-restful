@@ -78,7 +78,7 @@ class TemplateExtensionByAcceptedType(object):
         mtype = request.mime_type
 
         if ext and request.resolver_match.app_name != 'admin':
-            response['Content-Type'] = mtype + '; charset=' + response._charset
+            response['Content-Type'] = mtype + '; charset=' + response.charset
             response.template_name = final_template_name(request, response.template_name, ext)
 
         return response

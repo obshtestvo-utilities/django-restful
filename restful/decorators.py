@@ -43,6 +43,11 @@ def restful_template(dirname, name, appname=None, func=None):
                     template = template_name
                     break
 
+            status = 200
+            if isinstance(data, tuple):
+                status = data[1]
+                data = data[0]
+
             if isinstance(data, HtmlOnlyRedirectSuccessDict) and request.is_html() and not request.is_pjax():
                 for key, value in data.items():
                     messages.success(request, json.dumps({key: value}))
@@ -52,10 +57,6 @@ def restful_template(dirname, name, appname=None, func=None):
 
             if not (isinstance(data, (tuple, dict)) or data is None):
                 return data
-            status = 200
-            if isinstance(data, tuple):
-                status = data[1]
-                data = data[0]
             return response_class(request, template, data, status=status)
 
         return _restful
