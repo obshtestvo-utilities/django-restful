@@ -14,11 +14,16 @@ def jsonify(object):
     return json.dumps(object)
 
 @register.simple_tag(takes_context=True)
-def query(context, **kwargs):
+def query(context, *args, **kwargs):
     request = context.get('request')
     params = request.params.copy()
+    added_params = {}
 
-    for name, value in kwargs.items():
+    for param_dict in args:
+        added_params.update(param_dict)
+    added_params.update(kwargs)
+
+    for name, value in added_params.items():
         if params.get(name, None) is not None and value is None:
             del params[name]
         if value is not None:
