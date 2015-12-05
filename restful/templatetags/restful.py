@@ -27,7 +27,10 @@ def query(context, *args, **kwargs):
         if params.get(name, None) is not None and value is None:
             del params[name]
         if value is not None:
-            params[name] = value
+            if isinstance(value, (list,tuple)):
+                params.setlist(name, value)
+            else:
+                params[name] = value
 
     query_string = params.urlencode()
 
