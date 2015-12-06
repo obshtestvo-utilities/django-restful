@@ -68,6 +68,10 @@ class ResponseFormatDetection(object):
                 mtype = mime
                 break
 
+        if ext is None:
+            ext = '.html'
+            mtype = 'text/html'
+
         request.mime_ext = ext
         request.mime_type = mtype
 
