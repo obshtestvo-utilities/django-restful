@@ -24,12 +24,7 @@ def restful_template(dirname, name, appname=None, func=None):
         # maintain correct stacktrace name and doc
         @wraps(action, assigned=available_attrs(action))
         def _restful(obj, request, *args, **kwargs):
-            template = os.path.join(dirname, name)
-            try:
-                get_template(final_template_name(request, os.path.join(dirname, name), request.mime_ext))
-            except TemplateDoesNotExist:
-                if appname is not None:
-                    template = os.path.join(appname, template)
+            template = os.path.join(appname, dirname, name)
             data = action(obj, request, *args, **kwargs)
 
             template_alternatives = pre_success_rendering.send(
